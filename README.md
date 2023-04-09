@@ -1,3 +1,5 @@
+NextJS repo issue: https://github.com/vercel/next.js/issues/48171
+
 # Problem description.
 
 ## "Use client" read as undefined JSON.
