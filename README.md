@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Problem description.
 
-## Getting Started
+## "Use client" read as undefined JSON.
 
-First, run the development server:
+### Provide environment information.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Operating System:
+      Platform: win32
+      Arch: x64
+      Version: Windows 10 Home
+    Binaries:
+      Node: 18.15.0
+      npm: N/A
+      Yarn: N/A
+      pnpm: N/A
+    Relevant packages:
+      next: 13.3.1-canary.3
+      eslint-config-next: N/A
+      react: 18.2.0
+      react-dom: 18.2.0
+
+### To reproduce.
+
+1. Create a project in latest version.
+2. Remove copy the next code in Home.
+```javascript
+import ServerComponent from './ServerComponent';
+
+export default function Home() {
+  return (<ServerComponent/>)
+}
 ```
+3. Make this two components.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**ClientComponent.js**
+```javascript
+"use client";
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+export default function ClientComponent() {
+  return (
+    <div>
+        <h1>This is a client component!</h1>
+    </div>
+  )
+}
+```
+**ServerComponent.js**
+```javascript
+import ClientComponent from "./ClientComponent"
 
-[http://localhost:3000/api/hello](http://localhost:3000/api/hello) is an endpoint that uses [Route Handlers](https://beta.nextjs.org/docs/routing/route-handlers). This endpoint can be edited in `app/api/hello/route.js`.
+export default function ServerComponent() 
+{
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    return (<ClientComponent/>)
+        
+}
+ 
+```
+4. Do `npm run dev` in project enviroment.
 
-## Learn More
+### Describe the bug.
 
-To learn more about Next.js, take a look at the following resources:
+Page will be giving returning an exception and not running at all. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This is the given error:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+> Unhandled Runtime Error
+> 
+> SyntaxError: "undefined" is not valid JSON
+> 
+> Call Stack JSON.parse <anonymous>
+> 
+> React
+> 
+> parseModel
+>
+> node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js
+> (33:0)
+> 
+> resolveModule
+>
+> node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js
+> (749:0)
+> 
+> processFullRow
+>
+> node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js
+> (825:0)
+> 
+> processBinaryChunk
+>
+> node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js
+> (869:0)
+> 
+> progress
+>
+> node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js
+> (1476:0)
 
-## Deploy on Vercel
+### Expected behavior.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Page loads and show the message _"This is a client component!"_.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+As I read in beta docs, this should run but I don't understand what is happening, I deduce this is may due to a bad interpretation of `"use client"` as an undefined JSON, but can't be sure about it.
