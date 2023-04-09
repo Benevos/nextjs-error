@@ -22,7 +22,7 @@ Operating System:
 ### To reproduce.
 
 1. Create a project in latest version.
-2. Remove copy the next code in Home.
+2. Copy the next code in Home.
 ```javascript
 import ServerComponent from './ServerComponent';
 
